@@ -21,7 +21,6 @@ app.use(cors());
 let activeUsers = [];
 
 io.on('connection', (socket) => {
-    console.log('New client connected', socket.id);
 
     socket.on('newUser', async (user) => {
         user.socketId = socket.id;
@@ -61,14 +60,11 @@ io.on('connection', (socket) => {
         const userIndex = activeUsers.findIndex((user) => user.socketId === socket.id);
         if (userIndex !== -1) {
             const user = activeUsers[userIndex];
-
-            console.log(user.name);
             await removeUser(user.id);  // Removing the user from the database
 
             activeUsers.splice(userIndex, 1);  // Remove user from activeUsers array
 
             io.emit('activeUsers', activeUsers);  // Broadcast the updated activeUsers array
-            console.log('Client disconnected', socket.id);
         }
     });
 });
